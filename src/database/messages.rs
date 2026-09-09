@@ -1,4 +1,5 @@
 use async_trait::async_trait;
+use sea_orm::DbErr;
 use whatsapp_rust::buffa::Message as ProtoMessage;
 use whatsapp_rust::prelude::wa::Message;
 
@@ -11,9 +12,9 @@ pub trait MessageStore: Send + Sync {
         chat: &str,
         sender: &str,
         bytes: &[u8],
-    ) -> Result<(), sqlx::Error>;
+    ) -> Result<(), DbErr>;
 
-    async fn get_message_bytes(&self, id: &str) -> Result<Option<Vec<u8>>, sqlx::Error>;
+    async fn get_message_bytes(&self, id: &str) -> Result<Option<Vec<u8>>, DbErr>;
 
     async fn get_message(&self, id: &str) -> Option<Message> {
         let bytes = self.get_message_bytes(id).await.ok()??;
